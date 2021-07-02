@@ -1,9 +1,12 @@
-use svg::node::{
-    element::{Circle, Definitions, Group, Rectangle, Text, Use},
-    Node, Text as TextNode,
+use svg::{
+    node::{
+        element::{Circle, Definitions, Group, Rectangle, Text, Use},
+        Node, Text as TextNode,
+    },
+    Document,
 };
 
-use crate::dancer;
+use crate::{dancer, parse::Formation};
 
 /// In units of dancer width.
 pub const NOSE_RADIUS: f64 = 3.0 / 16.0;
@@ -15,6 +18,9 @@ pub const DANCER_CIRCLE_REF: &str = "#dancer-circle";
 pub const DANCER_CIRCLE_ID: &str = "dancer-circle";
 pub const NOSE_REF: &str = "#nose";
 pub const NOSE_ID: &str = "nose";
+
+/// Dancer width, in pixels.
+pub const DANCER_WIDTH: f64 = 100.0;
 
 pub fn definitions() -> Definitions {
     Definitions::new()
@@ -48,11 +54,15 @@ pub fn definitions() -> Definitions {
 }
 
 pub trait Render {
-    fn render(&self) -> Group;
+    type Output;
+
+    fn render(&self) -> Self::Output;
 }
 
 impl Render for dancer::Dancer {
-    fn render(&self) -> Group {
+    type Output = Group;
+
+    fn render(&self) -> Self::Output {
         let mut group = Group::new().add(
             Use::new()
                 .set("href", self.shape.href())
@@ -88,5 +98,26 @@ impl Render for dancer::Dancer {
             )
         }
         group
+    }
+}
+
+impl Render for Formation {
+    type Output = Document;
+
+    fn render(&self) -> Self::Output {
+        let width = self.max_x - self.min_x + 2.0;
+        let height = self.max_y - self.min_y + 2.0;
+        let mut doc = Document::new()
+            .set(
+                "viewBox",
+                (self.min_x - 1.0, self.min_y - 1.0, width, height),
+            )
+            .set("height", height * DANCER_WIDTH)
+            .set("width", width * DANCER_WIDTH)
+            .add(definitions());
+        for dancer in &self.dancers {
+            doc.append(dancer.render())
+        }
+        doc
     }
 }
