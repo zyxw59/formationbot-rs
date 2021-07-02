@@ -1,3 +1,4 @@
+use derivative::Derivative;
 use svg::node::Value;
 
 use crate::render;
@@ -13,8 +14,10 @@ pub struct Dancer {
     pub text: Option<String>,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Derivative, Debug, Copy, Clone, PartialEq)]
+#[derivative(Default)]
 pub enum Color {
+    #[derivative(Default)]
     Black,
     Red,
     Green,
@@ -25,28 +28,18 @@ pub enum Color {
     Rgb(u8, u8, u8),
 }
 
-impl Default for Color {
-    fn default() -> Color {
-        Color::Black
-    }
-}
-
 impl From<Color> for Value {
     fn from(color: Color) -> Value {
         format!("{:?}", color).into()
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Derivative, Debug, Copy, Clone, PartialEq)]
+#[derivative(Default)]
 pub enum Shape {
+    #[derivative(Default)]
     Square,
     Circle,
-}
-
-impl Default for Shape {
-    fn default() -> Shape {
-        Shape::Square
-    }
 }
 
 impl Shape {
@@ -58,17 +51,13 @@ impl Shape {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Derivative, Debug, Copy, Clone, PartialEq)]
+#[derivative(Default)]
 pub enum StrokeStyle {
+    #[derivative(Default)]
     Solid,
     Dotted,
     Dashed,
-}
-
-impl Default for StrokeStyle {
-    fn default() -> StrokeStyle {
-        StrokeStyle::Solid
-    }
 }
 
 impl From<StrokeStyle> for Value {
@@ -81,8 +70,10 @@ impl From<StrokeStyle> for Value {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Derivative, Debug, Copy, Clone, PartialEq)]
+#[derivative(Default)]
 pub enum Facing {
+    #[derivative(Default)]
     None,
     North,
     East,
@@ -100,11 +91,5 @@ impl Facing {
             Facing::West => 270.0,
             Facing::Angle(x) => *x,
         }
-    }
-}
-
-impl Default for Facing {
-    fn default() -> Facing {
-        Facing::North
     }
 }
