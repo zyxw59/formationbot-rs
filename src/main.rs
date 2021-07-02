@@ -1,52 +1,15 @@
+use std::io::Read;
+
 use formationbot::{
-    dancer::{Color, Dancer, Facing, Shape, StrokeStyle},
-    render::{definitions, Render},
+    parse::Formation,
+    render::Render,
 };
-use svg::{node::Node, save, Document};
 
-fn main() {
-    let mut doc = Document::new()
-        .set("viewBox", (-2, -2, 4, 4))
-        .set("height", 400)
-        .set("width", 400)
-        .add(definitions());
-    let dancers = vec![
-        Dancer {
-            x: -1.0,
-            y: -1.0,
-            facing: Facing::South,
-            stroke_style: StrokeStyle::Dotted,
-            text: Some("4".into()),
-            ..Default::default()
-        },
-        Dancer {
-            x: 1.0,
-            y: -1.0,
-            facing: Facing::None,
-            text: Some("3".into()),
-            ..Default::default()
-        },
-        Dancer {
-            x: 1.0,
-            y: 1.0,
-            facing: Facing::North,
-            stroke_style: StrokeStyle::Dashed,
-            color: Color::Blue,
-            text: Some("2".into()),
-            ..Default::default()
-        },
-        Dancer {
-            x: -1.0,
-            y: 1.0,
-            facing: Facing::East,
-            shape: Shape::Circle,
-            text: Some("1".into()),
-            ..Default::default()
-        },
-    ];
-    for dancer in dancers {
-        doc.append(dancer.render())
-    }
+fn main() -> std::io::Result<()> {
+    let mut stdin = std::io::stdin();
+    let mut buf = String::new();
+    stdin.read_to_string(&mut buf)?;
+    let formation = Formation::new(buf.chars());
 
-    save("test.svg", &doc).unwrap();
+    svg::save("out.svg", &formation.render())
 }
