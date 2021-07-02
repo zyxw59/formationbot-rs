@@ -1,4 +1,7 @@
-use formationbot::{definitions, Dancer, Facing, Shape, StrokeStyle, Color};
+use formationbot::{
+    dancer::{Color, Dancer, Facing, Shape, StrokeStyle},
+    render::{definitions, Render},
+};
 use svg::{node::Node, save, Document};
 
 fn main() {
