@@ -1,0 +1,18 @@
+[package]
+name = "discord-bot"
+version = "0.1.0"
+authors = ["Emily Crandall Fleischman <emilycf@mit.edu>"]
+edition = "2018"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.41"
+cairo-rs = "0.14.0"
+formationbot = { path = ".." }
+gio = "0.14.0"
+librsvg = { git = "https://gitlab.gnome.org/GNOME/librsvg" }
+serenity = "0.10.8"
+svg = "0.10.0"
+tempfile = "3.2.0"
