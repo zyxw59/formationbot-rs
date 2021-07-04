@@ -81,6 +81,18 @@ impl Formation {
         formation
     }
 
+    /// Returns the view box of the image: `(x, y, width, height)`
+    pub fn view_box(&self) -> (f64, f64, f64, f64) {
+        let width = self.max_x - self.min_x + 2.0;
+        let height = self.max_y - self.min_y + 2.0;
+        (self.min_x - 1.0, self.min_y - 1.0, width, height)
+    }
+
+    pub fn rendered_dimensions(&self) -> (f64, f64) {
+        let (_, _, width, height) = self.view_box();
+        (width * crate::render::DANCER_WIDTH, height * crate::render::DANCER_WIDTH)
+    }
+
     fn push_line(&mut self, line_num: usize, line: &mut Vec<Option<Dancer>>) {
         let y = 2.0 * line_num as f64;
         // x position of first dancer

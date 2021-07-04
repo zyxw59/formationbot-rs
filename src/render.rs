@@ -105,15 +105,11 @@ impl Render for Formation {
     type Output = Document;
 
     fn render(&self) -> Self::Output {
-        let width = self.max_x - self.min_x + 2.0;
-        let height = self.max_y - self.min_y + 2.0;
+        let (width, height) = self.rendered_dimensions();
         let mut doc = Document::new()
-            .set(
-                "viewBox",
-                (self.min_x - 1.0, self.min_y - 1.0, width, height),
-            )
-            .set("height", height * DANCER_WIDTH)
-            .set("width", width * DANCER_WIDTH)
+            .set("viewBox", self.view_box())
+            .set("height", height)
+            .set("width", width)
             .add(definitions());
         for dancer in &self.dancers {
             doc.append(dancer.render())
