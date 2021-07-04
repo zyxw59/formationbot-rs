@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 derivative = "2.2.0"
-svg = "0.7.1"
+svg = "0.10"
