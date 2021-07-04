@@ -1,0 +1,5 @@
+discord_token: '<YOUR DISCORD TOKEN HERE>'
+start_tag: '/f'
+end_tag: 'f/'
+comment_tag: '://'
+log_level: info

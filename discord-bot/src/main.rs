@@ -1,17 +1,51 @@
 use std::{borrow::Cow, iter::Peekable};
 
 use formationbot::{parse::Formation, render::Render};
+use log::LevelFilter;
 use serenity::{
     async_trait,
-    client::{Context, EventHandler},
+    client::{Client, Context, EventHandler},
     http::AttachmentType,
-    model::channel::Message,
+    model::{channel::Message, gateway::Ready},
 };
 
-fn main() {
-    println!("Hello, world!");
+#[derive(serde::Deserialize)]
+struct Config {
+    discord_token: String,
+    #[serde(flatten)]
+    handler: Handler,
+    log_level: LevelFilter,
 }
 
+impl Config {
+    fn new() -> anyhow::Result<Self> {
+        let file = std::fs::File::open("./config.yaml")?;
+        serde_yaml::from_reader::<_, Self>(file).map_err(Into::into)
+    }
+
+    fn init_logging(&self) {
+        let mut builder = pretty_env_logger::formatted_builder();
+        builder.filter_level(self.log_level);
+        if self.log_level < LevelFilter::Trace {
+            builder.filter(Some("tracing"), LevelFilter::Off);
+            builder.filter(Some("serenity"), LevelFilter::Off);
+        }
+        builder.init();
+    }
+}
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let config = Config::new()?;
+    config.init_logging();
+    let mut client = Client::builder(config.discord_token)
+        .event_handler(config.handler)
+        .await?;
+    client.start().await?;
+    Ok(())
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
 struct Handler {
     start_tag: String,
     end_tag: String,
@@ -33,17 +67,33 @@ impl Handler {
 
 #[async_trait]
 impl EventHandler for Handler {
+    async fn ready(&self, _: Context, ready: Ready) {
+        log::info!("Client ready in {} guilds", ready.guilds.len());
+    }
+
     async fn message(&self, ctx: Context, msg: Message) {
+        log::info!("received message: {}", msg.content);
         let images = self
             .get_formations(&msg.content)
             .map(render_formation)
-            .filter_map(|res| res.unwrap_or_default())
-            .map(|png| AttachmentType::Bytes {
+            .filter_map(|res| {
+                match res {
+                    Ok(ok) => ok,
+                    Err(e) => {
+                        log::error!("Failed to render formation: {}", e);
+                        None
+                    }
+                }
+            })
+            .enumerate()
+            .map(|(idx, png)| AttachmentType::Bytes {
                 data: Cow::Owned(png),
-                filename: "formation.png".into(),
+                filename: format!("formation-{}.png", idx),
             })
             .peekable();
-        send_reply(ctx, &msg, images).await.unwrap();
+        if let Err(e) = send_reply(ctx, &msg, images).await {
+            log::error!("Failed to send reply: {}", e);
+        }
     }
 }
 
@@ -119,5 +169,37 @@ impl<'tags, 'msg> Iterator for MessageIter<'tags, 'msg> {
             self.msg = "";
             None
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::{render_formation, Handler};
+
+    #[test]
+    fn message_iter() {
+        let text = "first /f >>/<< f/ second /f >> /f << f/ third /f ^^ :// comment";
+        let handler = Handler {
+            start_tag: "/f".into(),
+            end_tag: "f/".into(),
+            comment_tag: "://".into(),
+        };
+
+        assert_eq!(
+            handler.get_formations(text).collect::<Vec<_>>(),
+            &[" >>/<< ", " >> /f << ", " ^^ "]
+        );
+
+        let text = "first /f>>/<<f/ second /f<>/<>";
+        assert_eq!(
+            handler.get_formations(text).collect::<Vec<_>>(),
+            &[">>/<<", "<>/<>"]
+        );
+    }
+
+    #[test]
+    fn render() {
+        render_formation("<>/><").unwrap().unwrap();
+        assert!(render_formation("abcd").unwrap().is_none());
     }
 }
