@@ -372,10 +372,7 @@ name = "discord-bot"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "cairo-rs",
  "formationbot",
- "gio",
- "librsvg",
  "log",
  "pretty_env_logger",
  "serde",
@@ -533,8 +530,12 @@ dependencies = [
 name = "formationbot"
 version = "0.1.0"
 dependencies = [
+ "cairo-rs",
  "derivative",
+ "gio",
+ "librsvg",
  "svg",
+ "thiserror",
 ]
 
 [[package]]

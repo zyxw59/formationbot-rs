@@ -104,28 +104,8 @@ fn render_formation(formation_text: &str) -> anyhow::Result<Option<Vec<u8>>> {
         Ok(None)
     } else {
         let (width, height) = formation.rendered_dimensions();
-        let bounds = cairo::Rectangle {
-            x: 0.0,
-            y: 0.0,
-            width,
-            height,
-        };
-        let svg_doc = formation.render();
-        let mut buf = Vec::new();
-        svg::write(&mut buf, &svg_doc)?;
-        let stream = gio::ReadInputStream::new(std::io::Cursor::new(buf));
-        let svg_handle = librsvg::Loader::new().read_stream(
-            &stream,
-            None::<&gio::File>,
-            None::<&gio::Cancellable>,
-        )?;
-        let renderer = librsvg::CairoRenderer::new(&svg_handle);
-        let surface =
-            cairo::ImageSurface::create(cairo::Format::ARgb32, width as i32, height as i32)?;
-        let context = cairo::Context::new(&*surface)?;
-        renderer.render_document(&context, &bounds)?;
         let mut out_buf = Vec::new();
-        surface.write_to_png(&mut out_buf)?;
+        formationbot::png::svg_to_png(formation.render(), width, height, &mut out_buf)?;
         Ok(Some(out_buf))
     }
 }
