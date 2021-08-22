@@ -1,13 +1,20 @@
 use std::mem;
 
+use derivative::Derivative;
+
 use crate::dancer::{Color, Dancer, Facing, Shape, StrokeStyle};
 
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Derivative, Debug, Clone, PartialEq)]
+#[derivative(Default)]
 pub struct Formation {
     pub dancers: Vec<Dancer>,
+    #[derivative(Default(value="f64::NAN"))]
     pub min_x: f64,
+    #[derivative(Default(value="f64::NAN"))]
     pub max_x: f64,
+    #[derivative(Default(value="f64::NAN"))]
     pub min_y: f64,
+    #[derivative(Default(value="f64::NAN"))]
     pub max_y: f64,
 }
 
@@ -94,20 +101,27 @@ impl Formation {
     }
 
     fn push_line(&mut self, line_num: usize, line: &mut Vec<Option<Dancer>>) {
-        let y = 2.0 * line_num as f64;
+        let y0 = 2.0 * line_num as f64;
         // x position of first dancer
         let x0 = -(line.len() as f64);
         self.dancers.reserve(line.len());
-        for (x, dancer) in line.drain(..).enumerate() {
+        for (idx, dancer) in line.drain(..).enumerate() {
+            let y;
+            let x;
             if let Some(mut dancer) = dancer {
-                dancer.y += y;
-                dancer.x += 2.0 * x as f64 + x0;
-                self.min_x = self.min_x.min(dancer.x);
-                self.max_x = self.max_x.max(dancer.x);
-                self.min_y = self.min_y.min(dancer.y);
-                self.max_y = self.max_y.max(dancer.y);
+                dancer.y += y0;
+                dancer.x += 2.0 * idx as f64 + x0;
+                y = dancer.y;
+                x = dancer.x;
                 self.dancers.push(dancer);
+            } else {
+                y = y0;
+                x = 2.0 * idx as f64 + x0;
             }
+            self.min_x = self.min_x.min(x);
+            self.max_x = self.max_x.max(x);
+            self.min_y = self.min_y.min(y);
+            self.max_y = self.max_y.max(y);
         }
     }
 }
