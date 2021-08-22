@@ -1,6 +1,6 @@
 use svg::{
     node::{
-        element::{Circle, Definitions, Group, Rectangle, Text, Use},
+        element::{path::Data, Circle, Definitions, Group, Path, Rectangle, Text, Use},
         Node, Text as TextNode,
     },
     Document,
@@ -10,12 +10,15 @@ use crate::{dancer, parse::Formation};
 
 /// In units of dancer width.
 pub const NOSE_RADIUS: f64 = 3.0 / 16.0;
+pub const DANCER_RADIUS: f64 = std::f64::consts::FRAC_2_SQRT_PI / 2.0;
 pub const STROKE_WIDTH: f64 = 1.0 / 16.0;
 pub const DASH_LENGTH: f64 = 0.2;
 pub const DANCER_SQUARE_REF: &str = "#dancer-square";
 pub const DANCER_SQUARE_ID: &str = "dancer-square";
 pub const DANCER_CIRCLE_REF: &str = "#dancer-circle";
 pub const DANCER_CIRCLE_ID: &str = "dancer-circle";
+pub const DANCER_PLUS_REF: &str = "#dancer-plus";
+pub const DANCER_PLUS_ID: &str = "dancer-plus";
 pub const NOSE_REF: &str = "#nose";
 pub const NOSE_ID: &str = "nose";
 
@@ -47,9 +50,23 @@ pub fn definitions() -> Definitions {
                 .set("id", DANCER_CIRCLE_ID)
                 .set("stroke-width", STROKE_WIDTH)
                 .set("fill", "none")
-                .set("r", std::f64::consts::FRAC_1_PI.sqrt())
+                .set("r", DANCER_RADIUS)
                 .set("cx", 0)
                 .set("cy", 0),
+        )
+        .add(
+            Path::new()
+                .set("id", DANCER_PLUS_ID)
+                .set("stroke-width", STROKE_WIDTH)
+                .set("fill", "none")
+                .set(
+                    "d",
+                    Data::new()
+                        .move_to((-DANCER_RADIUS, 0.0))
+                        .horizontal_line_by(DANCER_RADIUS * 2.0)
+                        .move_to((0.0, -DANCER_RADIUS))
+                        .vertical_line_by(DANCER_RADIUS * 2.0),
+                ),
         )
 }
 

@@ -40,6 +40,7 @@ pub enum Shape {
     #[derivative(Default)]
     Square,
     Circle,
+    Plus,
 }
 
 impl Shape {
@@ -47,6 +48,7 @@ impl Shape {
         match self {
             Shape::Square => render::DANCER_SQUARE_REF,
             Shape::Circle => render::DANCER_CIRCLE_REF,
+            Shape::Plus => render::DANCER_PLUS_REF,
         }
     }
 }

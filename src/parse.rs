@@ -74,6 +74,11 @@ impl Formation {
                     current.facing = Facing::West;
                     line.push(Some(mem::take(&mut current)));
                 }
+                '+' => {
+                    current.text = None;
+                    current.shape = Shape::Plus;
+                    line.push(Some(mem::take(&mut current)));
+                }
                 ',' | '@' | '*' => line.push(Some(mem::take(&mut current))),
                 // empty spot (and clear current dancer attributes)
                 '.' => {
