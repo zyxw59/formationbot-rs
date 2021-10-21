@@ -94,15 +94,23 @@ impl Formation {
     }
 
     /// Returns the view box of the image: `(x, y, width, height)`
-    pub fn view_box(&self) -> (f64, f64, f64, f64) {
+    pub fn view_box(&self) -> ViewBox {
         let width = self.max_x - self.min_x + 2.0;
         let height = self.max_y - self.min_y + 2.0;
-        (self.min_x - 1.0, self.min_y - 1.0, width, height)
+        ViewBox {
+            x: self.min_x - 1.0,
+            y: self.min_y - 1.0,
+            width,
+            height,
+        }
     }
 
     pub fn rendered_dimensions(&self) -> (f64, f64) {
-        let (_, _, width, height) = self.view_box();
-        (width * crate::render::DANCER_WIDTH, height * crate::render::DANCER_WIDTH)
+        let ViewBox { width, height, .. } = self.view_box();
+        (
+            width * crate::render::DANCER_WIDTH,
+            height * crate::render::DANCER_WIDTH,
+        )
     }
 
     fn push_line(&mut self, line_num: usize, line: &mut Vec<Option<Dancer>>) {
@@ -128,5 +136,26 @@ impl Formation {
             self.min_y = self.min_y.min(y);
             self.max_y = self.max_y.max(y);
         }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct ViewBox {
+    pub x: f64,
+    pub y: f64,
+    pub width: f64,
+    pub height: f64,
+}
+
+impl From<ViewBox> for svg::node::Value {
+    fn from(
+        ViewBox {
+            x,
+            y,
+            width,
+            height,
+        }: ViewBox,
+    ) -> svg::node::Value {
+        (x, y, width, height).into()
     }
 }

@@ -122,12 +122,21 @@ impl Render for Formation {
     type Output = Document;
 
     fn render(&self) -> Self::Output {
+        let view_box = self.view_box();
         let (width, height) = self.rendered_dimensions();
         let mut doc = Document::new()
-            .set("viewBox", self.view_box())
+            .set("viewBox", view_box)
             .set("height", height)
             .set("width", width)
-            .add(definitions());
+            .add(definitions())
+            .add(Rectangle::new()
+                .set("x", view_box.x)
+                .set("y", view_box.y)
+                .set("width", view_box.width)
+                .set("height", view_box.height)
+                .set("fill", "White")
+                .set("stroke", "none")
+            );
         for dancer in &self.dancers {
             doc.append(dancer.render())
         }
