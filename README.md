@@ -22,9 +22,13 @@ Other common prefixes include:
 
 For complicated formations, one trick is that each line is centered. If that's not enough, you can also prefix `u`, `d`, `l`, or `R` (yes, case-sensitive) to shift a person up or down a half matrix spot.
 
-## Usage
+## Standalone usage
 
-If you don't have it installed, [install rust](https://www.rust-lang.org/tools/install).
+If you don't have it installed, [install Rust](https://www.rust-lang.org/tools/install).
 
 Then, run `cargo run`. This program reads from stdin until end-of-file, and
 then renders the formation in SVG to the file `out.svg`.
+
+## Discord bot
+
+Follow the instructions in [discord-bot/README.md](discord-bot/README.md)
