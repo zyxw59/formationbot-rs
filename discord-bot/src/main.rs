@@ -54,18 +54,22 @@ async fn main() -> anyhow::Result<()> {
 #[derive(Clone, Debug, serde::Deserialize)]
 struct Handler {
     start_tag: String,
-    end_tag: String,
-    comment_tag: String,
+    end_tag: Option<String>,
+    comment_tag: Option<String>,
 }
 
 impl Handler {
     fn get_formations<'tags, 'msg>(&'tags self, mut msg: &'msg str) -> MessageIter<'tags, 'msg> {
-        if let Some((text, _)) = msg.split_once(&self.comment_tag) {
+        if let Some((text, _)) = self
+            .comment_tag
+            .as_ref()
+            .and_then(|comment_tag| msg.split_once(comment_tag))
+        {
             msg = text;
         }
         MessageIter {
             start_tag: &self.start_tag,
-            end_tag: &self.end_tag,
+            end_tag: self.end_tag.as_deref(),
             msg,
         }
     }
@@ -82,13 +86,11 @@ impl EventHandler for Handler {
         let images = self
             .get_formations(&msg.content)
             .map(render_formation)
-            .filter_map(|res| {
-                match res {
-                    Ok(ok) => ok,
-                    Err(e) => {
-                        log::error!("Failed to render formation: {}", e);
-                        None
-                    }
+            .filter_map(|res| match res {
+                Ok(ok) => ok,
+                Err(e) => {
+                    log::error!("Failed to render formation: {}", e);
+                    None
                 }
             })
             .enumerate()
@@ -135,7 +137,7 @@ async fn send_reply(
 
 struct MessageIter<'tags, 'msg> {
     start_tag: &'tags str,
-    end_tag: &'tags str,
+    end_tag: Option<&'tags str>,
     msg: &'msg str,
 }
 
@@ -144,7 +146,10 @@ impl<'tags, 'msg> Iterator for MessageIter<'tags, 'msg> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((_, formation)) = self.msg.split_once(self.start_tag) {
-            if let Some((formation, rest)) = formation.split_once(self.end_tag) {
+            if let Some((formation, rest)) = self
+                .end_tag
+                .and_then(|end_tag| formation.split_once(end_tag))
+            {
                 self.msg = rest;
                 Some(formation)
             } else {
