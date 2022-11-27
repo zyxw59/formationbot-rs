@@ -12,6 +12,7 @@ Facing directions are indicated with:
 - `<`, `>`, `^`, and `v` (or `V`) represent a person facing in the appropriate direction
 - `nsew` can be used similarly (north, south, etc.) when more convenient (for example, mobile keyboards)
 - `,`, `@`, and `*` represent a person with no facing direction
+- `+` draws a simple cross in place of a dancer
 - `.` represents an empty position
 
 Other common prefixes include:
@@ -21,6 +22,14 @@ Other common prefixes include:
 - labels: `x`, `X`, a digit, or `'` (apostrophe) followed by any character will fill the box in appropriately
 
 For complicated formations, one trick is that each line is centered. If that's not enough, you can also prefix `u`, `d`, `l`, or `R` (yes, case-sensitive) to shift a person up or down a half matrix spot.
+
+## Improvements over the old version
+
+- More colors (cyan and magenta)
+- Circular dancers (in addition to square ones, of course)
+- An additional style of phantom (dotted outline in addition to dashed)
+- `+` for marking matrix spots without dancers
+- Label dancers with arbitrary characters, not just `X`, `O`, or 0-9
 
 ## Standalone usage
 
