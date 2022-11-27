@@ -8,5 +8,12 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cairo-rs = { version = "0.16.1", optional = true }
 derivative = "2.2.0"
+gio = { version = "0.16.3", optional = true }
+librsvg = { git = "https://gitlab.gnome.org/GNOME/librsvg", tag = "2.55.90", optional = true }
 svg = "0.10"
+thiserror = { version = "1.0.26", optional = true }
+
+[features]
+png = ["cairo-rs", "gio", "librsvg", "thiserror"]
