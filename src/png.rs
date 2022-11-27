@@ -32,12 +32,7 @@ pub fn svg_to_png(
     let renderer = CairoRenderer::new(&svg_handle);
     let surface = ImageSurface::create(Format::ARgb32, width as i32, height as i32)?;
     let context = Context::new(&*surface)?;
-    let bounds = Rectangle {
-        x: 0.0,
-        y: 0.0,
-        width,
-        height,
-    };
+    let bounds = Rectangle::new(0.0, 0.0, width, height);
     renderer.render_document(&context, &bounds)?;
     surface.write_to_png(out)?;
     Ok(())
