@@ -5,8 +5,10 @@ use log::LevelFilter;
 use serenity::{
     async_trait,
     client::{Client, Context, EventHandler},
-    http::AttachmentType,
-    model::{channel::Message, gateway::Ready},
+    model::{
+        channel::{AttachmentType, Message},
+        gateway::{GatewayIntents, Ready},
+    },
 };
 
 #[derive(serde::Deserialize)]
@@ -34,11 +36,15 @@ impl Config {
     }
 }
 
+const INTENTS: GatewayIntents = GatewayIntents::MESSAGE_CONTENT
+    .union(GatewayIntents::GUILD_MESSAGES)
+    .union(GatewayIntents::DIRECT_MESSAGES);
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let config = Config::new()?;
     config.init_logging();
-    let mut client = Client::builder(config.discord_token)
+    let mut client = Client::builder(config.discord_token, INTENTS)
         .event_handler(config.handler)
         .await?;
     client.start().await?;
