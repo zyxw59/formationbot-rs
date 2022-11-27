@@ -103,14 +103,20 @@ impl Render for dancer::Dancer {
             ),
         };
         if let Some(text) = &self.text {
+            // workaround for rsvg not supporting `dominant-baseline`
+            let (y, baseline) = if cfg!(feature = "png") {
+                (self.y + 0.35, "auto")
+            } else {
+                (self.y, "central")
+            };
             group.append(
                 Text::new()
                     .set("fill", self.color)
                     .set("x", self.x)
-                    .set("y", self.y)
+                    .set("y", y)
                     .set("font-size", 1)
                     .set("text-anchor", "middle")
-                    .set("dominant-baseline", "central")
+                    .set("dominant-baseline", baseline)
                     .add(TextNode::new(text)),
             )
         }
