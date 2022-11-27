@@ -8,13 +8,13 @@ use crate::dancer::{Color, Dancer, Facing, Shape, StrokeStyle};
 #[derivative(Default)]
 pub struct Formation {
     pub dancers: Vec<Dancer>,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub min_x: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub max_x: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub min_y: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub max_y: f64,
 }
 
@@ -102,7 +102,10 @@ impl Formation {
 
     pub fn rendered_dimensions(&self) -> (f64, f64) {
         let (_, _, width, height) = self.view_box();
-        (width * crate::render::DANCER_WIDTH, height * crate::render::DANCER_WIDTH)
+        (
+            width * crate::render::DANCER_WIDTH,
+            height * crate::render::DANCER_WIDTH,
+        )
     }
 
     fn push_line(&mut self, line_num: usize, line: &mut Vec<Option<Dancer>>) {
