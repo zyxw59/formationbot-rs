@@ -30,6 +30,8 @@ For complicated formations, one trick is that each line is centered. If that's n
 - An additional style of phantom (dotted outline in addition to dashed)
 - `+` for marking matrix spots without dancers
 - Label dancers with arbitrary characters, not just `X`, `O`, or 0-9
+- Dancers offset above the top row or below the bottom row (e.g. `u@ d@`) are not cropped out
+- Dancers have the same horizontal and vertical spacing
 
 ## Standalone usage
 
