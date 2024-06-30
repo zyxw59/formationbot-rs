@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: required libraries install
-      run: sudo apt-get install libpango
+      run: |
+        sudo apt-get update
+        sudo apt-get install libpango
     - name: rustup toolchain install
       uses: dtolnay/rust-toolchain@v1
       with:
