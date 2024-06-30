@@ -1,5 +1,6 @@
 # https://nix.dev/tutorials/packaging-existing-software#building-with-nix-build
 # default.nix
+{ dockerName ? "ghcr.io/dehnert/formationbot-rs/discord-bot", dockerTag ? "test" } :
 let
   pkgs = import <nixpkgs> { config = {}; overlays = []; };
   formationbot = pkgs.callPackage ./formationbot.nix { };
@@ -8,8 +9,8 @@ in
   formationbot = formationbot;
   # https://ryantm.github.io/nixpkgs/builders/images/dockertools/
   docker = pkgs.dockerTools.buildLayeredImage {
-    name = "registry.fly.io/formationbot-discord-rs";
-    tag = "latest";
+    name = "${dockerName}";
+    tag = "${dockerTag}";
     config = {
       # See https://github.com/opencontainers/image-spec/blob/main/config.md
       # for semantics
