@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: required libraries install
+      run: sudo apt-get install pango
     - name: rustup toolchain install
       uses: dtolnay/rust-toolchain@v1
       with:
