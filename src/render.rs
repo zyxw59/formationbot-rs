@@ -1,7 +1,7 @@
 use svg::{
     node::{
         element::{path::Data, Circle, Definitions, Group, Path, Rectangle, Text, Use},
-        Node, Text as TextNode,
+        Node,
     },
     Document,
 };
@@ -110,14 +110,13 @@ impl Render for dancer::Dancer {
                 (self.y, "central")
             };
             group.append(
-                Text::new()
+                Text::new(text)
                     .set("fill", self.color)
                     .set("x", self.x)
                     .set("y", y)
                     .set("font-size", 1)
                     .set("text-anchor", "middle")
-                    .set("dominant-baseline", baseline)
-                    .add(TextNode::new(text)),
+                    .set("dominant-baseline", baseline),
             )
         }
         group

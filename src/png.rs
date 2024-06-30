@@ -2,7 +2,7 @@ use std::io::{Cursor, Write};
 
 use cairo::{Context, Format, ImageSurface, Rectangle};
 use gio::{Cancellable, File, ReadInputStream};
-use librsvg::{CairoRenderer, Loader};
+use rsvg::{CairoRenderer, Loader};
 use svg::Document;
 
 #[derive(thiserror::Error, Debug)]
@@ -10,9 +10,9 @@ pub enum Error {
     #[error("An IO error occurred: {0}")]
     Io(#[from] std::io::Error),
     #[error("Failed to load SVG: {0}")]
-    Loading(#[from] librsvg::LoadingError),
+    Loading(#[from] rsvg::LoadingError),
     #[error("Failed to render SVG: {0}")]
-    Render(#[from] librsvg::RenderingError),
+    Render(#[from] rsvg::RenderingError),
     #[error("Failed to create cairo surface: {0}")]
     Cairo(#[from] cairo::Error),
     #[error("Failed to output image data: {0}")]
