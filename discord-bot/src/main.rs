@@ -172,8 +172,8 @@ mod test {
         let text = "first /f >>/<< f/ second /f >> /f << f/ third /f ^^ :// comment";
         let handler = Handler {
             start_tag: "/f".into(),
-            end_tag: "f/".into(),
-            comment_tag: "://".into(),
+            end_tag: Some("f/".into()),
+            comment_tag: Some("://".into()),
         };
 
         assert_eq!(
