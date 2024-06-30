@@ -17,3 +17,6 @@ thiserror = { version = "1.0.26", optional = true }
 
 [features]
 png = ["cairo-rs", "gio", "librsvg", "thiserror"]
+
+[workspace]
+members = ["discord-bot"]
