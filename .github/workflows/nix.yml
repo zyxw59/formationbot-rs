@@ -7,7 +7,8 @@ jobs:
   container:
     name: Build derivation
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags') # Run only branches (tags and main will build and publish)
+    # Predefined variables: https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context
+    if: github.ref_type == 'branch' && github.ref != 'refs/heads/main' # Run only branches (tags and main will build and publish)
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -18,15 +19,12 @@ jobs:
   container_publish:
     name: Build and publish docker container
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/container' || startsWith(github.ref, 'refs/tags') # Run only on main or tags
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/container' || github.ref_type == 'tag' # Run only on main or tags
     env:
       DOCKER_NAME: "ghcr.io/${{ github.repository }}/discord-bot"
-      DOCKER_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref == 'refs/heads/container' && 'testing' || 'tag' }}
+      # If it's neither the main nor container branches, it must be a tag -- just use the tag name
+      DOCKER_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref == 'refs/heads/container' && 'testing' || github.ref_name }}
     steps:
-      - name: Set DOCKER_TAG for tag
-        if: startsWith(github.ref, 'refs/tags')
-        run:
-          echo "TAG=$(echo "${{ github.ref }}" | sed 's/^refs\/tags\/v//g')" >> "$GITHUB_ENV"
       - name: Checkout code
         uses: actions/checkout@v7
       - name: Login to GitHub Container Registry
