@@ -134,13 +134,14 @@ impl Render for Formation {
             .set("height", height)
             .set("width", width)
             .add(definitions())
-            .add(Rectangle::new()
-                .set("x", view_box.x)
-                .set("y", view_box.y)
-                .set("width", view_box.width)
-                .set("height", view_box.height)
-                .set("fill", "White")
-                .set("stroke", "none")
+            .add(
+                Rectangle::new()
+                    .set("x", view_box.x)
+                    .set("y", view_box.y)
+                    .set("width", view_box.width)
+                    .set("height", view_box.height)
+                    .set("fill", "White")
+                    .set("stroke", "none"),
             );
         for dancer in &self.dancers {
             doc.append(dancer.render())
