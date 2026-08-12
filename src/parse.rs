@@ -8,13 +8,13 @@ use crate::dancer::{Color, Dancer, Facing, Shape, StrokeStyle};
 #[derivative(Default)]
 pub struct Formation {
     pub dancers: Vec<Dancer>,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub min_x: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub max_x: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub min_y: f64,
-    #[derivative(Default(value="f64::NAN"))]
+    #[derivative(Default(value = "f64::NAN"))]
     pub max_y: f64,
 }
 

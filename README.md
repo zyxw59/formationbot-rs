@@ -12,6 +12,7 @@ Facing directions are indicated with:
 - `<`, `>`, `^`, and `v` (or `V`) represent a person facing in the appropriate direction
 - `nsew` can be used similarly (north, south, etc.) when more convenient (for example, mobile keyboards)
 - `,`, `@`, and `*` represent a person with no facing direction
+- `+` draws a simple cross in place of a dancer
 - `.` represents an empty position
 
 Other common prefixes include:
@@ -22,9 +23,23 @@ Other common prefixes include:
 
 For complicated formations, one trick is that each line is centered. If that's not enough, you can also prefix `u`, `d`, `l`, or `R` (yes, case-sensitive) to shift a person up or down a half matrix spot.
 
-## Usage
+## Improvements over the old version
 
-If you don't have it installed, [install rust](https://www.rust-lang.org/tools/install).
+- More colors (cyan and magenta)
+- Circular dancers (in addition to square ones, of course)
+- An additional style of phantom (dotted outline in addition to dashed)
+- `+` for marking matrix spots without dancers
+- Label dancers with arbitrary characters, not just `X`, `O`, or 0-9
+- Dancers offset above the top row or below the bottom row (e.g. `u@ d@`) are not cropped out
+- Dancers have the same horizontal and vertical spacing
+
+## Standalone usage
+
+If you don't have it installed, [install Rust](https://www.rust-lang.org/tools/install).
 
 Then, run `cargo run`. This program reads from stdin until end-of-file, and
 then renders the formation in SVG to the file `out.svg`.
+
+## Discord bot
+
+Follow the instructions in [discord-bot/README.md](discord-bot/README.md)

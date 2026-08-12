@@ -1,9 +1,6 @@
 use std::io::Read;
 
-use formationbot::{
-    parse::Formation,
-    render::Render,
-};
+use formationbot::{parse::Formation, render::Render};
 
 fn main() -> std::io::Result<()> {
     let mut stdin = std::io::stdin();

@@ -1,7 +1,7 @@
 use svg::{
     node::{
         element::{path::Data, Circle, Definitions, Group, Path, Rectangle, Text, Use},
-        Node, Text as TextNode,
+        Node,
     },
     Document,
 };
@@ -103,15 +103,20 @@ impl Render for dancer::Dancer {
             ),
         };
         if let Some(text) = &self.text {
+            // workaround for rsvg not supporting `dominant-baseline`
+            let (y, baseline) = if cfg!(feature = "png") {
+                (self.y + 0.35, "auto")
+            } else {
+                (self.y, "central")
+            };
             group.append(
-                Text::new()
+                Text::new(text)
                     .set("fill", self.color)
                     .set("x", self.x)
-                    .set("y", self.y)
+                    .set("y", y)
                     .set("font-size", 1)
                     .set("text-anchor", "middle")
-                    .set("dominant-baseline", "central")
-                    .add(TextNode::new(text)),
+                    .set("dominant-baseline", baseline),
             )
         }
         group
